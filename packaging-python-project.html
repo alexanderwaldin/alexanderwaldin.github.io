@@ -62,10 +62,6 @@ Alexander Waldin            </a>
                         </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-<<<<<<< HEAD
-=======
-              <li><a href="http://alexanderwaldin.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -106,24 +102,16 @@ Alexander Waldin            </a>
 </footer><!-- /.post-info -->                    </div>
                 </div>
                 <p>I recently had to deploy some of my python packages in production. To do this, I needed to package them. Since packaging python code was new to me, I took notes about all the steps I took and references I used to accomplish this. Eventually these notes became this tutorial. In addition to describing one approach to packaging your code, I will point out some best practices as well as pitfalls I ran into. </p>
-<<<<<<< HEAD
 <h3>Code and Prerequisites</h3>
 <p>Prerequisites:  Familiarity with python and bash</p>
 <p>Code:   The code for the sample project I wrote for this post can be found in <a href="https://github.com/alexanderwaldin/projectname">my github repo</a>.</p>
 <h3>Reasons For Packaging Your Project</h3>
-=======
-<h3 id="code-and-prerequisites">Code and Prerequisites</h3>
-<p>Prerequisites:  Familiarity with python and bash</p>
-<p>Code:   The code for the sample project I wrote for this post can be found in <a href="https://github.com/alexanderwaldin/projectname">my github repo</a>.</p>
-<h3 id="reasons-for-packaging-your-project">Reasons For Packaging Your Project</h3>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 <p>Packaging your python projects is not something you need to worry about when you first start programming. In fact, if the only person using your projects is you, you can get a lot done without ever having to worry about packaging. However if you need your python project to run in production, or if you are working with a team and you need to make sure everybody is using the same version, you will need to make the project distributable. Apart from allowing your code to be distributed, taking the steps to make it packageable has additional benefits:</p>
 <ul>
 <li>If nothing else, structuring your project so that it can be packaged, encourages good software engineering practices like writing unit tests, and adhering to a consistent project structure.</li>
 <li>Your package can be installed locally. This means it will be installed into your dist-packages, and you don't have to worry about configuring your PYTHONPATH to include the source.</li>
 <li>If you use virtual environments in your other projects, it's easy to incorporate one project in another by installing it into the corresponding virtual environment.</li>
 </ul>
-<<<<<<< HEAD
 <h3>Distutils, Pip And Setuptools, Oh My</h3>
 <p>One of the more confusing aspects of packaging python modules are the many tools available. Guidance on which tools to use is not straightforward, and I highly recommend reading <a href="http://stackoverflow.com/a/14753678/699952">this answer on stackoverflow</a>.
 As of current (September 2015) the recommendation is to use setup tools and wheels.</p>
@@ -190,64 +178,6 @@ As of current (September 2015) the recommendation is to use setup tools and whee
 </pre></div>
 
 
-=======
-<h3 id="distutils-pip-and-setuptools-oh-my">Distutils, Pip And Setuptools, Oh My</h3>
-<p>One of the more confusing aspects of packaging python modules are the many tools available. Guidance on which tools to use is not straightforward, and I highly recommend reading <a href="http://stackoverflow.com/a/14753678/699952">this answer&nbsp;on stackoverflow</a>.
-As of current (September 2015) the recommendation is to use setup tools and wheels.</p>
-<h3 id="structuring-python-projects">Structuring Python Projects</h3>
-<p>Structuring your projects is important. When you first create a python project it's worth adhering to a structure that will allow git, setup.py and virtualenvironment to play together nicely. To achieve this, I currently use the following project scaffold:</p>
-<div class="highlight"><pre>    projectname
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── MANIFEST.in
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──&nbsp;setup.py
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── README
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── .gitignore
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── .git
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── projectname_env
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└──&nbsp;projectname
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; ├── __init__.py
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;├── subpackageone
-    &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; │ &nbsp; ├── __init__.py
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; │&nbsp;&nbsp; ├── second_module.py
-    &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp; ├── tests
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;│ &nbsp; │ &nbsp;&nbsp;└── test_second_module.py
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; │&nbsp;&nbsp; └── models
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; │ &nbsp; &nbsp; &nbsp; └── model1
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; ├── first_module.py&nbsp; &nbsp;
-    &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; └── tests
-    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; └── test_second_module.py
-</pre></div>
-<p>I'll cover the details of setup.py and MANIFEST.in shortly. For now, notice that there are two projectname directories. The hierarchically lower level &lsquo;projectname' directory contains the actual code you want to package. Alongside it are all the tools that help manage (git) and package (setup.py, MANIFEST.in) it. Note that there is no <code>__init__.py</code> file directly underneath the top level &lsquo;projectname' directory, as the files at this level are not part of a python package. Within each python package you will find a tests package containing the unittests for each module in that package, as well as an optional &lsquo;models' directory containing binary files used by the modules in that package. The tests directories do not contain <code>__init__.py</code> files as they are not packages. For the naming conventions for modules as well as packages, it's good to try and stick to the <a href="https://www.python.org/dev/peps/pep-0008/#package-and-module-names">pep8 reference</a></p>
-<h4 id="importing-modules-and-referencing-files">Importing Modules and Referencing Files</h4>
-<h5 id="imports">Imports</h5>
-<p>I recommend always using absolute imports. That is, if&nbsp;<code>first_module</code>&nbsp;needs to import&nbsp;from <code>second_module</code>&nbsp;then it should import it as:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">projectname.subpackageone</span> <span class="kn">import</span> <span class="n">second_module</span>
-</pre></div>
-<p>relative imports are <a href="http://stackoverflow.com/questions/72852/how-to-do-relative-imports-in-python">messy</a>, and I find they lead to confusing bugs. When executing my python code, I like to execute it from the top level projectname directory, e.g.: <code>python&nbsp;projectname/first_module.py</code></p>
-<h5 id="referencing-files">Referencing Files</h5>
-<p>If some of your modules load binary files, it is important not to hard code in absolute paths to these files, as the path will not be valid once the project has been installed. One method to get around this, which I like, is to define the following variable in any module that will be performing i/o to a binary file:</p>
-<div class="highlight"><pre><span class="n">__location__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)))</span>
-</pre></div>
-<p><code>__location__</code> will then be the absolute path to the directory where the python module resides. Getting the path to where the binary file is located is simply a matter of joining <code>__location__</code> with the correct relative path. For example if my module &lsquo;first_module.py' had to access model1, the python code in first_module.py would be:</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
-<span class="n">__location__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">__file__</span><span class="p">)))</span>
-<span class="n">model1_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__location__</span><span class="p">,</span> <span class="s">'tests'</span><span class="p">,</span> <span class="s">'model1'</span><span class="p">)</span>
-</pre></div>
-<h3 id="setuppy_2">setup.py</h3>
-<p>The setup.py script is the main piece that describes your module distribution. All metadata about your modules are passed in through keyword arguments. Let's take a look at an example:</p>
-<div class="highlight"><pre><span class="n">setup</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'projectname'</span><span class="p">,</span>
-      <span class="n">version</span><span class="o">=</span><span class="s">'0.1'</span><span class="p">,</span>
-      <span class="n">description</span><span class="o">=</span><span class="s">'Demo&nbsp;Modules'</span><span class="p">,</span>
-      <span class="n">url</span><span class="o">=</span><span class="s">'https://github.com/alexanderwaldin/projectname'</span><span class="p">,</span>
-      <span class="n">author</span><span class="o">=</span><span class="s">'The&nbsp;Author'</span><span class="p">,</span>
-      <span class="n">author_email</span><span class="o">=</span><span class="s">'theauthor@example.com'</span><span class="p">,</span>
-      <span class="n">license</span><span class="o">=</span><span class="s">'MIT'</span><span class="p">,</span>
-      <span class="n">packages</span><span class="o">=</span><span class="n">find_packages</span><span class="p">(),</span>
-      <span class="n">include_package_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-      <span class="n">test_suite</span><span class="o">=</span><span class="s">'nose.collector'</span><span class="p">,</span>
-      <span class="n">tests_require</span><span class="o">=</span><span class="p">[</span><span class="s">'nose'</span><span class="p">],</span>
-      <span class="n">install_requires</span><span class="o">=</span><span class="p">[])</span>
-</pre></div>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 <p>Many of the arguments are self explanatory, but I want to touch on a few of them:</p>
 <ul>
 <li><code>packages</code>: This argument takes a list of package names that will be installed. You can either manually list them, or you can use the <a href="https://pythonhosted.org/setuptools/setuptools.html#using-find-packages">find_packages</a> function.</li>
@@ -255,25 +185,16 @@ As of current (September 2015) the recommendation is to use setup tools and whee
 <li><code>test_suite</code>, <code>tests_require</code>: used to specify the test runner that finds all the tests to run. I like <a href="https://nose.readthedocs.org/en/latest/">nose</a>.</li>
 <li><code>install_requires</code>: a list of libraries that your project depends on. When installing your project, Pip will ensure these are installed, and if they are not, it will try and install them. <code>install_requires</code> is not a duplication of requirements.txt, see the section requirements.txt vs install_requires.</li>
 </ul>
-<<<<<<< HEAD
 <h4>Additional <code>setup()</code> keywords</h4>
 <p>As setuptools is an enhancement of distutils, the complete list of <a href="https://docs.python.org/2/distutils/setupscript.html#additional-meta-data">keyword arguments</a> is a combination of the keyword arguments in distutils as well as the <a href="https://pythonhosted.org/setuptools/setuptools.html#test-build-package-and-run-a-unittest-suite">new and changed keywords from setuptools</a>.</p>
 <h3>MANIFEST.in</h3>
 <p>Now that we've written the setup.py script, let's take a look at writing the <a href="https://docs.python.org/2/distutils/sourcedist.html#the-manifest-in-template">MANIFEST.in</a> file.</p>
 <div class="highlight"><pre><span></span>recursive-include projectname *.py
-=======
-<h4 id="additional-setup-keywords">Additional <code>setup()</code> keywords</h4>
-<p>As setuptools is an enhancement of distutils, the complete list of <a href="https://docs.python.org/2/distutils/setupscript.html#additional-meta-data">keyword arguments</a> is a combination of the keyword arguments in distutils as well as the <a href="https://pythonhosted.org/setuptools/setuptools.html#test-build-package-and-run-a-unittest-suite">new and changed keywords from setuptools</a>.</p>
-<h3 id="manifestin_1">MANIFEST.in</h3>
-<p>Now that we've written the setup.py script, let's take a look at writing the <a href="https://docs.python.org/2/distutils/sourcedist.html#the-manifest-in-template">MANIFEST.in</a> file.</p>
-<div class="highlight"><pre>recursive-include projectname *.py
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 recursive-include projectname *.pickle
 include README
 include LICENSE
 include requirements.txt
 </pre></div>
-<<<<<<< HEAD
 
 
 <p>The manifest is used to specify files to include in the distribution that are not mentioned in the setup.py script. Usually these are files like unittests, the README file, the requirements.txt file etc. Specify which files to include using <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Unix-style "glob" patterns</a>.</p>
@@ -292,50 +213,22 @@ virtualenv projectname_env/
 <h4>requirements.txt vs install_requires</h4>
 <p>Maybe you're like me, and you ask yourself why there are two places where you define the requirements for your project, the requirements.txt file, as well as the install_requires keyword in setup.py . Doesn't this violate the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY</a> principle? You could write a function that parses the requirements.txt to create a list of requirements to pass to the install_requires keyword:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pip.req</span> <span class="kn">import</span> <span class="n">parse_requirements</span>
-=======
-<p>The manifest is used to specify files to include in the distribution that are not mentioned in the setup.py script. Usually these are files like unittests, the README file, the requirements.txt file etc. Specify which files to include using <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Unix-style "glob" patterns</a>.</p>
-<h4 id="check-manifest">Check-Manifest</h4>
-<p>Often it can be tricky to make sure that everything that needs to be included in the source distribution is actually getting included. A wonderful tool to help you is <a href="https://github.com/mgedmin/check-manifest">check-manifest</a>, check-manifest verifies that everything that's under source control is being included in the distribution, and if something is missing, it will offer suggestions as to how you should modify your MANIFEST.in file.&nbsp;</p>
-<h3 id="virtual-environment-and-requirementstxt_1">Virtual Environment and requirements.txt</h3>
-<p><a href="https://virtualenv.pypa.io/en/latest/">virtualenv</a> is a tool to create isolated Python environments. It addresses the problem of dependencies and versions. Before distributing your code, I highly recommend creating a virtual environment in which you run your testsuite on the project. This will allow you to collect a list of dependencies your project requires using pip freeze. You can store these requirements in the requirements.txt file using <code>pip freeze &gt; requirements.txt</code>. I don't want to go into details on how to use virtualenv, as there's already a <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">good tutorial out there</a>. I personally store the files for the project's virtual environment in a directory called projectname_env in the top level projectname directory. The following instructions will get you started:</p>
-<div class="highlight"><pre>mkdir projectname_env
-virtualenv projectname_env/
-<span class="nb">source </span>projectname_env/bin/activate
-</pre></div>
-<p>This will create a new directory for the environment, create the virtual environment, and then activate the environment. To disable the virtual environment simply type <code>deactivate</code>. Since you don't want the virtual environment under version control, simply add &lsquo;projectname_env' to your .gitignore.</p>
-<p>You don't need to develop the project in the virtual environment. If you've written unittests to cover your code, it suffices to activate the virtualenvironment when you are done developing and then run the test_suite. Your tests will break until you've installed all required dependencies.</p>
-<h4 id="requirementstxt-vs-install_requires">requirements.txt vs install_requires</h4>
-<p>Maybe you're like me, and you ask yourself why there are two places where you define the requirements for your project, the requirements.txt file, as well as the install_requires keyword in setup.py . Doesn't this violate the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY</a> principle? You could write a function that parses the requirements.txt to create a list of requirements to pass to the install_requires keyword:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">pip.req</span> <span class="kn">import</span> <span class="n">parse_requirements</span>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 <span class="kn">from</span> <span class="nn">pip.download</span> <span class="kn">import</span> <span class="n">PipSession</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="k">def</span> <span class="nf">read_requirements</span><span class="p">():</span>
-<<<<<<< HEAD
     <span class="sd">&#39;&#39;&#39;parses requirements from requirements.txt&#39;&#39;&#39;</span>
     <span class="n">reqs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__location__</span><span class="p">,</span> <span class="s1">&#39;requirements.txt&#39;</span><span class="p">)</span>
-=======
-    <span class="sd">'''parses requirements from requirements.txt'''</span>
-    <span class="n">reqs_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__location__</span><span class="p">,</span> <span class="s">'requirements.txt'</span><span class="p">)</span>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
     <span class="n">install_reqs</span> <span class="o">=</span> <span class="n">parse_requirements</span><span class="p">(</span><span class="n">reqs_path</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">PipSession</span><span class="p">())</span>
     <span class="n">reqs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ir</span><span class="o">.</span><span class="n">req</span><span class="p">)</span> <span class="k">for</span> <span class="n">ir</span> <span class="ow">in</span> <span class="n">install_reqs</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">reqs</span>
 </pre></div>
-<<<<<<< HEAD
 
 
 <p>Unfortunately, this is probably not best practice - requirements.txt is supposed to be just a complement. There is a lot of talk about <a href="http://stackoverflow.com/questions/14399534/how-can-i-reference-requirements-txt-for-the-install-requires-kwarg-in-setuptool">why</a> <a href="http://stackoverflow.com/questions/6947988/when-to-use-pip-requirements-file-versus-install-requires-in-setup-py">this</a> <a href="https://caremad.io/2013/07/setup-vs-requirement/">is</a> the case. My solution to this is to generate the requirements.txt with pip freeze, and then to manually copy this list of required packages into setup.py as well as strip out their version number. That said, I don't like this solution, as it's easy to get the two lists out of sync if you're not careful, so if you have a better suggestion, please leave it in a comment.</p>
 <h3>Testing, Packaging And Installing Your Project</h3>
 <p>Before distributing your project I highly recommend writing a test suite for it (or perhaps you follow a test driven approach) . Among many other benefits, tests allow the people who are using your code to make sure all the dependencies are fulfilled, as well as get confidence your module works. You can test your project by executing python setup.py test from your top level projectname directory. </p>
 <p>Once you are confident that everything is working as you expect, you can build a source distribution using <code>python setup.py sdist</code>. This will create a dist directory, inside you will find a tar.gz archive containing your project. </p>
-=======
-<p>Unfortunately, this is probably not best practice - requirements.txt is supposed to be just a complement. There is a lot of talk about <a href="http://stackoverflow.com/questions/14399534/how-can-i-reference-requirements-txt-for-the-install-requires-kwarg-in-setuptool">why</a> <a href="http://stackoverflow.com/questions/6947988/when-to-use-pip-requirements-file-versus-install-requires-in-setup-py">this</a> <a href="https://caremad.io/2013/07/setup-vs-requirement/">is</a> the case. My solution to this is to generate the requirements.txt with pip freeze, and then to manually copy this list of required packages into setup.py as well as strip out their version number. That said, I don't like this solution, as it's easy to get the two lists out of sync if you're not careful, so if you have a better suggestion, please leave it in a comment.</p>
-<h3 id="testing-packaging-and-installing-your-project_1">Testing, Packaging And Installing Your Project</h3>
-<p>Before distributing your project I highly recommend writing a test suite for it (or perhaps you follow a test driven approach) . Among many other benefits, tests allow the people who are using your code to make sure all the dependencies are fulfilled, as well as get confidence your module works. You can test your project by executing python setup.py test from your top level projectname directory.&nbsp;</p>
-<p>Once you are confident that everything is working as you expect, you can build a source distribution using <code>python setup.py sdist</code>. This will create a dist directory, inside you will find a tar.gz archive containing your project.&nbsp;</p>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 <p><a href="http://stackoverflow.com/questions/2087148/can-i-use-pip-instead-of-easy-install-for-python-setup-py-install-dependen">pip allows you to install from a local folder</a>, so the easiest way to install your project is to simply unpackage the archive, navigate into the directory, and execute: <code>sudo pip install</code>.</p>
             </div>
             <!-- /.entry-content -->
@@ -399,13 +292,8 @@ virtualenv projectname_env/
    <div class="container">
       <hr>
       <div class="row">
-<<<<<<< HEAD
          <div class="col-xs-10">&copy; 2016 Alexander Waldin
             &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-=======
-         <div class="col-xs-10">&copy; 2015 Alexander Waldin
-            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
          <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>

@@ -63,10 +63,6 @@ Alexander Waldin            </a>
                         </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-<<<<<<< HEAD
-=======
-              <li><a href="http://alexanderwaldin.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -111,7 +107,6 @@ Alexander Waldin            </a>
                 <p>Have you been itching to play with Spark, but been somewhat put off by the in-depth documentation? Then this guide is for you. I've been wanting to try Pyspark for some time now, and was surprised there was no 'quickstart', aka. get your first Pyspark job up and running in 5 minutes guide. So I wrote this tutorial. This guide will walk you through the process of installing Spark on a local machine and get you started writing map reduce applications.</p>
 <p><em>Prerequisites:</em> Familiarity with Python and Bash. The operating system I'm using is Ubuntu, if you are using another Linux distro, you can most likely just follow along. However, if you are using OS X some adaptation may be needed. </p>
 <p><em>Note:</em> Spark is in continuous development. The examples in this guide have been written for spark 1.5.1 built for Hadoop 2.6. As of today, spark 1.5.1 is the most recent version, but by the time you read this, it may very well be outdated. If this is the case, you can most likely follow along by replacing the version numbers with the most current version. e.g. spark-x.y.z instead of spark 1.5.1 .</p>
-<<<<<<< HEAD
 <h3>Why Spark?</h3>
 <p>To me, one of the most appealing features of Spark is the ability to write map reduce jobs in Python. Until recently there weren't many alternatives to writing verbose Java programs if you wanted to write map reduce jobs. Now however, with Spark's Python api, developers can easily and rapidly prototype ideas using a language that is built on core philosophies such "Don’t try for perfection because “good enough” is often just that." and "Readability counts". This, combined with the fact that almost every programmer knows Python, makes me believe that very soon Python will be the most commonly used language for Spark applications.</p>
 <h3>Downloading Spark</h3>
@@ -151,45 +146,11 @@ spark-1.5.1-bin-hadoop2.6/bin/pyspark
 <p>The fastest way to to get your Spark code to run is to run in local mode. To do this we tell the Spark configuration to use the special 'local' mode. Open an iPython shell or an iPython notebook session and paste the following:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkContext</span><span class="p">,</span> <span class="n">SparkConf</span>
 <span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">()</span><span class="o">.</span><span class="n">setAppName</span><span class="p">(</span><span class="s1">&#39;appName&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setMaster</span><span class="p">(</span><span class="s1">&#39;local&#39;</span><span class="p">)</span>
-=======
-<h3 id="why-spark">Why Spark?</h3>
-<p>To me, one of the most appealing features of Spark is the ability to write map reduce jobs in Python. Until recently there weren't many alternatives to writing verbose Java programs if you wanted to write map reduce jobs. Now however, with Spark's Python api, developers can easily and rapidly prototype ideas using a language that is built on core philosophies such "Don&rsquo;t try for perfection because &ldquo;good enough&rdquo; is often just that." and "Readability counts". This, combined with the fact that almost every programmer knows Python, makes me believe that very soon Python will be the most commonly used language for Spark applications.</p>
-<h3 id="downloading-spark">Downloading Spark</h3>
-<p>First <a href="http://spark.apache.org/downloads.html">download</a> the latest version of Spark. In the 'Choose a package type' dropdown, select the most recent 'Prebuilt for Hadoop X.Y or later' version. As of date, this is Spark release 1.5.1 and the binaries are 'Pre-built for Hadoop 2.6 or later' To verify the installation, you can run the md5sum command on it. e.g. <code>md5sum spark-1.5.1-bin-hadoop2.6.tgz</code> and compare the output of the hash with the signatures and checksums listed for that version on the spark homepage. </p>
-<h3 id="installing-spark">Installing Spark</h3>
-<p>We are going to install Spark into <code>/usr/local/bin</code>, but there are <a href="http://superuser.com/questions/90479/what-is-the-conventional-install-location-for-applications-in-linux">several other viable locations you could install it to</a>. </p>
-<p>Change to the directory where you downloaded the Spark binary, then decompress it:</p>
-<div class="highlight"><pre>sudo tar -zxf spark-1.5.1-bin-hadoop2.6.tgz -C /usr/local/bin
-</pre></div>
-<p>Let's verify that everything works so far. Change directory to <code>/usr/local/bin</code>, and start the pyspark shell:</p>
-<div class="highlight"><pre>cd /usr/local/bin
-spark-1.5.1-bin-hadoop2.6/bin/pyspark
-</pre></div>
-<p>this should start up a python shell that looks like:</p>
-<p><img alt="an image of the Spark shell" src="/images/spark-shell.jpg"/></p>
-<h4 id="configuring-the-pythonpath">Configuring The PYTHONPATH</h4>
-<p>Being able to start a Pyspark shell is great, but what if you want to use ipython notebooks or write full blown Pyspark jobs? To do this you'll need to tell your interpreter where to look for the pyspark and py4j libraries. We'll accomplish that by adding the following lines to your bashrc to update the PYTHONPATH variable. </p>
-<div class="highlight"><pre><span class="nb">export </span><span class="nv">SPARK_HOME</span><span class="o">=</span>/usr/local/bin/spark-1.5.1-bin-hadoop2.6
-<span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$SPARK_HOME</span>/python:<span class="nv">$SPARK_HOME</span>/python/build:<span class="nv">$PYTHONPATH</span>
-<span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$SPARK_HOME</span>/python/lib/py4j-0.8.2.1-src.zip:<span class="nv">$PYTHONPATH</span>
-</pre></div>
-<p>once you've sourced your bashrc, start up a python prompt and type:</p>
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">pyspark</span>
-</pre></div>
-<p>if this does not result in any exceptions, congratulation! You've successfully installed Pyspark. If it doesn't, double check the version numbers to make sure they are correctly specified.</p>
-<h3 id="running-spark_1">Running Spark</h3>
-<p>Now that we've installed Spark, we'll look at two different modes in which you can run Pyspark code. </p>
-<h4 id="1-running-pyspark-in-local-mode">1. Running Pyspark In Local Mode:</h4>
-<p>The fastest way to to get your Spark code to run is to run in local mode. To do this we tell the Spark configuration to use the special 'local' mode. Open an iPython shell or an iPython notebook session and paste the following:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkContext</span><span class="p">,</span> <span class="n">SparkConf</span>
-<span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">()</span><span class="o">.</span><span class="n">setAppName</span><span class="p">(</span><span class="s">'appName'</span><span class="p">)</span><span class="o">.</span><span class="n">setMaster</span><span class="p">(</span><span class="s">'local'</span><span class="p">)</span>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 <span class="n">sc</span> <span class="o">=</span> <span class="n">SparkContext</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">dist_data</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">dist_data</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
-<<<<<<< HEAD
 
 
 <h4>2. Run Spark In Standalone Mode:</h4>
@@ -211,29 +172,11 @@ spark-1.5.1-bin-hadoop2.6/bin/pyspark
 <p>Now that your cluster is up and running, you can submit jobs to it. To submit a job from within your Python code, specify the master parameter as the url where the master is listening:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkContext</span><span class="p">,</span> <span class="n">SparkConf</span>
 <span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">()</span><span class="o">.</span><span class="n">setAppName</span><span class="p">(</span><span class="s1">&#39;appName&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setMaster</span><span class="p">(</span><span class="s1">&#39;spark://virtual:7077&#39;</span><span class="p">)</span>
-=======
-<h4 id="2-run-spark-in-standalone-mode">2. Run Spark In Standalone Mode:</h4>
-<p>The disadvantage of running in local mode is that the SparkContext runs applications locally on a single core. The easiest way to use multiple cores, or to connect to a non-local cluster is to use a standalone Spark cluster. An additional benefit to running Spark in standalone mode is the master exposes a UI (by default at <code>http://localhost:8080/</code> )that allows us to monitor our Spark jobs. I'll show you how to set up a standalone Spark cluster on your local machine. For more information, check out the <a href="https://spark.apache.org/docs/1.2.1/spark-standalone.html">official documentation</a>.</p>
-<p>A standalone Spark cluster consists of one master and several slaves that are connected to it. The slaves as well as the master can all be running on the same machine, or they can be distributed across multiple machines. </p>
-<p>To launch the master, navigate to <code>/usr/local/bin</code> and execute:</p>
-<div class="highlight"><pre>sudo ./spark-1.5.1-bin-hadoop2.6/sbin/start-master.sh
-</pre></div>
-<p>Once the master is up and running, you can use your browser to navigate to <code>http://localhost:8080/</code>. You should see the url where the master is listening. E.g. <code>spark://virtual:7077</code></p>
-<p>You can launch and connect a slave with this url:</p>
-<div class="highlight"><pre>sudo spark-1.5.1-bin-hadoop2.6/sbin/start-slave.sh spark://virtual:7077
-</pre></div>
-<p>Once your slaves have started up, you can navigate to <code>http://localhost:8080/</code> again. This time, you will see the connected workers:</p>
-<p><img alt="an image of the UI the Spark master exposes with one slave connected" src="/images/spark-master-ui.jpg"/></p>
-<p>Now that your cluster is up and running, you can submit jobs to it. To submit a job from within your Python code, specify the master parameter as the url where the master is listening:</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkContext</span><span class="p">,</span> <span class="n">SparkConf</span>
-<span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">()</span><span class="o">.</span><span class="n">setAppName</span><span class="p">(</span><span class="s">'appName'</span><span class="p">)</span><span class="o">.</span><span class="n">setMaster</span><span class="p">(</span><span class="s">'spark://virtual:7077'</span><span class="p">)</span>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 <span class="n">sc</span> <span class="o">=</span> <span class="n">SparkContext</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">dist_data</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">dist_data</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
-<<<<<<< HEAD
 
 
 <p><strong>Pitfall:</strong> The master processes tasks sequentially. If a task never ends (e.g. because it's a shell) you will not be able to submit another job. It's easiest if you only connect one Python shell / notebook to your cluster. </p>
@@ -251,19 +194,6 @@ spark-1.5.1-bin-hadoop2.6/bin/pyspark
 </pre></div>
 
 
-=======
-<p><strong>Pitfall:</strong> The master processes tasks sequentially. If a task never ends (e.g. because it's a shell) you will not be able to submit another job. It's easiest if you only connect one Python shell / notebook to your cluster. </p>
-<p>To gracefully shut down your Spark cluster execute the stop-all.sh script from the sbin directory. E.g. </p>
-<div class="highlight"><pre>sudo spark-1.5.1-bin-hadoop2.6/sbin/stop-all.sh
-</pre></div>
-<h5 id="set-aliases">Set Aliases</h5>
-<p>You may want to make starting and stopping the Spark cluster more convenient. This can be done by setting several aliases. For example, adding the following lines to your bashrc:</p>
-<div class="highlight"><pre><span class="nb">alias </span>sparkmaster-start<span class="o">=</span><span class="s1">'sudo /usr/local/bin/spark-1.5.1-bin-hadoop2.6/sbin/start-master.sh'</span>
-<span class="nb">alias </span>sparkslave-start<span class="o">=</span><span class="s1">'sudo /usr/local/bin/spark-1.5.1-bin-hadoop2.6/sbin/start-slave.sh spark://virtual:7077'</span>
-<span class="nb">alias </span>sparkmaster-stop<span class="o">=</span><span class="s1">'sudo /usr/local/bin/spark-1.5.1-bin-hadoop2.6/sbin/stop-master.sh'</span>
-<span class="nb">alias </span>sparkslave-stop<span class="o">=</span><span class="s1">'sudo /usr/local/bin/spark-1.5.1-bin-hadoop2.6/sbin/stop-slave.sh'</span>
-</pre></div>
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 <p>will define four aliases:</p>
 <ol>
 <li><code>sparkmaster-start</code></li>
@@ -272,7 +202,6 @@ spark-1.5.1-bin-hadoop2.6/bin/pyspark
 <li><code>sparkslave-stop</code></li>
 </ol>
 <p>You can then start a spark cluster with:</p>
-<<<<<<< HEAD
 <div class="highlight"><pre><span></span>sparkmaster-start
 sparkslave-start
 </pre></div>
@@ -280,13 +209,6 @@ sparkslave-start
 
 <p>and shut it down with:</p>
 <div class="highlight"><pre><span></span>sparkmaster-stop
-=======
-<div class="highlight"><pre>sparkmaster-start
-sparkslave-start
-</pre></div>
-<p>and shut it down with:</p>
-<div class="highlight"><pre>sparkmaster-stop
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 sparkslave-stop
 </pre></div>
             </div>
@@ -351,13 +273,8 @@ sparkslave-stop
    <div class="container">
       <hr>
       <div class="row">
-<<<<<<< HEAD
          <div class="col-xs-10">&copy; 2016 Alexander Waldin
             &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-=======
-         <div class="col-xs-10">&copy; 2015 Alexander Waldin
-            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
          <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>

@@ -1,18 +1,12 @@
 
 /*
-<<<<<<< HEAD
 Tipue Search 5.0
 Copyright (c) 2015 Tipue
-=======
-Tipue Search 4.0
-Copyright (c) 2014 Tipue
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 Tipue Search is released under the MIT License
 http://www.tipue.com/search
 */
 
 
-<<<<<<< HEAD
 /*
 Stop words
 Stop words list from http://www.ranks.nl/stopwords
@@ -63,17 +57,3 @@ var tipuesearch_string_10 = 'Search too short';
 var tipuesearch_string_11 = 'Should be one character or more';
 var tipuesearch_string_12 = 'Should be';
 var tipuesearch_string_13 = 'characters or more';
-=======
-var tipuesearch_stop_words = ["and", "be", "by", "do", "for", "he", "how", "if", "is", "it", "my", "not", "of", "or", "the", "to", "up", "what", "when"];
-
-var tipuesearch_replace = {"words": [
-     {"word": "tipua", "replace_with": "tipue"},
-     {"word": "javscript", "replace_with": "javascript"}
-]};
-
-var tipuesearch_stem = {"words": [
-     {"word": "e-mail", "stem": "email"},
-     {"word": "javascript", "stem": "script"},
-     {"word": "javascript", "stem": "js"}
-]};
->>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
