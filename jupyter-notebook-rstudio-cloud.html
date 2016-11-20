@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Jupyter Notebook and RStudio on the Cloud - Alexander Waldin</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://alexanderwaldin.github.io/jupyter-notebook-rstudio-cloud.html">
+
+        <meta name="author" content="Alexander Waldin" />
+        <meta name="keywords" content="python,r,google cloud" />
+        <meta name="description" content="A guide to setting up ipython notebook and rstudio server on google cloud compute engine." />
+
+        <meta property="og:site_name" content="Alexander Waldin" />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Jupyter Notebook and RStudio on the Cloud"/>
+        <meta property="og:url" content="http://alexanderwaldin.github.io/jupyter-notebook-rstudio-cloud.html"/>
+        <meta property="og:description" content="A guide to setting up ipython notebook and rstudio server on google cloud compute engine."/>
+        <meta property="article:published_time" content="2016-11-04" />
+            <meta property="article:section" content="Coding" />
+            <meta property="article:tag" content="python" />
+            <meta property="article:tag" content="r" />
+            <meta property="article:tag" content="google cloud" />
+            <meta property="article:author" content="Alexander Waldin" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://alexanderwaldin.github.io/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://alexanderwaldin.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://alexanderwaldin.github.io/theme/css/pygments/autumn.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://alexanderwaldin.github.io/theme/css/style.css" type="text/css"/>
+
+
+
+
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://alexanderwaldin.github.io/" class="navbar-brand">
+Alexander Waldin            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://alexanderwaldin.github.io/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://alexanderwaldin.github.io/category/coding.html">Coding</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://alexanderwaldin.github.io/jupyter-notebook-rstudio-cloud.html"
+                       rel="bookmark"
+                       title="Permalink to Jupyter Notebook and RStudio on the Cloud">
+                        Jupyter Notebook and RStudio on the Cloud
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2016-11-04T00:00:00-07:00"> Fri 04 November 2016</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://alexanderwaldin.github.io/tag/python.html">python</a>
+        /
+	<a href="http://alexanderwaldin.github.io/tag/r.html">r</a>
+        /
+	<a href="http://alexanderwaldin.github.io/tag/google-cloud.html">google cloud</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p><em>Prerequisites:</em> Familiarity with bash, linux file permissions.</p>
+<h3>Why Develop on the Cloud?</h3>
+<p>My Macbook Pro is now 4 years old and with only 8GB of ram it is beginning to 
+show it's age in some of my larger data science projects. Being an Apple laptop,
+there is no way of increasing memory. Given that my laptop still works fine, and
+inspired by <a href="https://stharrold.github.io/20151208-ipynb-on-gce-from-chrome.html">this blog post</a>, I decided to
+move my development environment to the cloud. Specifically I decided to run it 
+on <a href="https://cloud.google.com/compute/">Google Compute Engine</a>. My hobby projects 
+are currently primarily in python and R, both of which offer web browser IDE's 
+in the form of Jupyter Notebook and R server respectively. If those IDEs don't 
+suffice I can use vim over ssh, or set up an ssh workspace on <a href="https://c9.io">Cloud9</a>. A cloud IDE offers me several advantages:</p>
+<ul>
+<li>Portability of workspace wherever I go.</li>
+<li>Scale development instance to the appropriate size.</li>
+<li>Cheaper than investing in a new, powerful laptop. </li>
+<li>Easy to back up through periodic snapshots. </li>
+</ul>
+<p>Here is what my new ide looks like :)</p>
+<p><img alt="image of RStudio Server and Jupyter in Chrome" src="/images/cloud_ides.jpg" /></p>
+<h3>Setting up the Cloud instance</h3>
+<p>Set up is pretty straightforward. Follow the <a href="https://cloud.google.com/compute/docs/quickstart-linux">quickstart</a>; here are my settings:</p>
+<ul>
+<li>Instance size: I chose the smallest to start, but you can <a href="https://cloud.google.com/compute/docs/instances/changing-machine-type-of-stopped-instance">resize</a>
+at any time.</li>
+<li>Operating System: I chose Debian for it's stability.</li>
+<li>Hard disk: I highly recommend a 10Gbyte SSD drive. </li>
+<li>SSD for speed. </li>
+<li>10Gbyte to save money. You can always make it larger later, but not smaller.</li>
+<li>Firewall: Allow HTTP and HTTPS connections to use <code>curl</code> and <code>wget</code>.</li>
+</ul>
+<p>Once you have the instance running, connect to it using <a href="https://cloud.google.com/compute/docs/instances/connecting-to-instance#sshingcloud">gcloud tools</a>.</p>
+<h3>Setting up a Jupyter Notebook</h3>
+<p>Follow the <a href="http://jupyter.readthedocs.io/en/latest/install.html">jupyter installation instructions</a>. If you decide to install
+the Anaconda distribution like I did, here are a few notes:</p>
+<ul>
+<li>Copy the downloader path, and use <code>wget</code> to download the latest release.</li>
+<li>Anaconda adds a line to your .bashrc exporting the correct path to your 
+  distribution. Make sure it is correct (it looks like
+  <code>PATH="/home/username/path/to/anaconda3/bin:$PATH"</code>)</li>
+<li>Source you bashrc <code>source ~/.bashrc</code> and ensure the latest version of conda is
+  installed by entering <code>conda -V</code>.</li>
+<li>You can now start your jupyter notebook with 
+  <code>jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser</code></li>
+<li>To access your jupyter notebook via the browser, you'll need to forward the
+  8888 port to your local machine using ssh. ssh flags can be passed via <a href="https://cloud.google.com/sdk/gcloud/reference/compute/ssh">
+  gcloud</a>:
+  <code>gcloud compute ssh --ssh-flag="-L localhost:8888:0.0.0.0:8888" instance_name</code></li>
+<li>You should now be able to navigate the browser on your local machine to
+  <code>http://127.0.0.1:8888/</code> and see the jupyter interface. </li>
+</ul>
+<h4>Create a Jupyter Service</h4>
+<p>Wouldn't it be nice if the underlying Operating system handled starting the 
+notebook server as well as restarting it, if it died? That's what <a href="https://wiki.debian.org/Daemon">Daemons</a> are for. Writing a service script is actually
+a bit tricky, fortunately you can adapt Doowan <a href="https://gist.github.com/Doowon/38910829898a6624ce4ed554f082c4dd">this template</a>.</p>
+<p>I adapted this file in the following:</p>
+<ul>
+<li>Changed <code>UID=1000</code> to <code>UID=`id -u username`</code> so that the daemon runs as 
+  me.</li>
+<li>Added <code>"/path/to/anaconda3/bin:$PATH"</code> to the initial variables declared so 
+  the path to the anaconda distribution is loaded.</li>
+<li>Changed DAEMON variable to: <code>DAEMON=/path/to/anaconda3/bin/jupyter-notebook</code>.</li>
+<li>Changed the DAEMON_ARGS to: <code>"--ip=0.0.0.0 --port=8888 --no-browser 
+  --notebook-dir=/path/to/user/workspace"</code>.</li>
+</ul>
+<p>Make sure the logging directory exists. Afterwards you can start, stop, or
+restart the service with:</p>
+<div class="highlight"><pre><span></span>sudo /etc/init.d/jupyter start
+sudo /etc/init.d/jupyter stop
+sudo /etc/init.d/jupyter restart
+</pre></div>
+
+
+<p>Furthermore, whenever you start the instance, the notebook server will already be
+up and running.</p>
+<h3>Setting up RStudio Server</h3>
+<p>Installing <a href="https://www.rstudio.com/products/rstudio/download-server/">RStudio server</a> is straightforward.
+The instructions below are for debian jessie, but Ubuntu is very similar. The 
+first thing to do is <a href="https://cran.rstudio.com/bin/linux/debian/#debian-jessie-stable">add the CRAN repository</a>. This consists
+of two steps:</p>
+<ol>
+<li>Add the debian cran entry to <code>/etc/apt/sources.list</code></li>
+</ol>
+<p><code>sudo sh -c 'echo "deb http://cran.rstudio.com/bin/linux/debian jessie-cran3/" &gt;&gt; /etc/apt/sources.list'</code></p>
+<ol>
+<li>Add the correct public key to verify the packages, as described in this 
+   <a href="http://stackoverflow.com/questions/10255082/installing-r-from-cran-ubuntu-repository-no-public-key-error">Stackoverflow answer</a></li>
+</ol>
+<p><code>sudo apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 381BA480</code></p>
+<ol>
+<li>Now you can follow the rest of the instructions on setting up RStudio server:</li>
+</ol>
+<div class="highlight"><pre><span></span>sudo apt-get install r-base
+sudo apt-get install gdebi-core
+wget https://download2.rstudio.org/rstudio-server-1.0.44-amd64.deb
+sudo gdebi rstudio-server-1.0.44-amd64.deb
+</pre></div>
+
+
+<p>If you are using a mac, and throughout this process you are getting locale 
+warnings like:</p>
+<div class="highlight"><pre><span></span>perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+    <span class="nv">LC_ALL</span> <span class="o">=</span> <span class="o">(</span><span class="nb">unset</span><span class="o">)</span>,
+    <span class="nv">LANG</span> <span class="o">=</span> <span class="s2">&quot;en_US.UTF-8&quot;</span>
+    are supported and installed on your system.
+</pre></div>
+
+
+<p>You can uncomment the line <code>AcceptEnv LANG LC_*</code> in <code>/etc/ssh/sshd_config</code> as 
+described in this <a href="http://stackoverflow.com/questions/2499794/how-to-fix-a-locale-setting-warning-from-perl">stackoverflow answer</a>.</p>
+<h4>Creating a User to Log Into RStudio Server</h4>
+<p>Rstudio already creates a daemon listening on port 8787 for you,You can forward 
+this port with <code>gcloud compute ssh --ssh-flag="-L 8787:0.0.0.0:8787" instance_name</code> 
+and navigate your browser on your local machine to <a href="http://127.0.0.1:8787/">http://127.0.0.1:8787/</a> to be greeted by RStudio's login screen prompting for a 
+username and password. Any user account with a password can login here. 
+However, the user created by the instance during setup has their <a href="http://www.cyberciti.biz/faq/linux-locking-an-account/">password locked</a>. You can check this
+using the <code>passwd</code> command:</p>
+<div class="highlight"><pre><span></span>passwd --status username
+username L 10/29/2016 0 99999 7 -1
+</pre></div>
+
+
+<p>The <code>L</code> means the password has been locked, which means no value entered will 
+ever hash to the password. This prevents a remote login without your private 
+key. You have two options:</p>
+<ol>
+<li>Unlock the account, as described in the <a href="http://www.cyberciti.biz/faq/linux-locking-an-account/">link above</a>.</li>
+<li><a href="https://debian-administration.org/article/2/Adding_new_users">Create a new user</a></li>
+</ol>
+<p>Because I didn't want to unlock an account with admin privileges, I chose option
+two. Once you've created the new user you'll be able to log into RStudio server
+at <a href="http://127.0.0.1:8787/">http://127.0.0.1:8787/</a>. </p>
+<h4>Sharing a Workspace</h4>
+<p>One disadvantage of creating a separate user for RStudio Server is that your
+python and R workspaces will be separate. Because I wanted to be able to share
+data files between the two environments, I decided to make my original user's 
+workspace part of a developers group, so the new ruser I created would have
+access to the workspace. To do this, first create the workspace and add the
+users to it:</p>
+<div class="highlight"><pre><span></span>sudo su # Become root.
+groupadd developers # Create group developers.
+usermod -a -G developers ruser # Add ruser to group developers.
+usermod -a -G developers username # Add original user to group developers.
+</pre></div>
+
+
+<p>The next steps are as follows:</p>
+<ul>
+<li>Add your workspace directory to the developers group.</li>
+<li><a href="http://unix.stackexchange.com/questions/182212/chmod-gs-command">Set the workspace's group_id</a> so all future
+files will belong to the developers group.</li>
+<li>Set the workspace's <a href="https://doc.opensuse.org/documentation/leap/security/html/book.security/cha.security.acls.html#sec.security.acls.handle.defacl:">default ACL</a>
+so all current and future files will have group read write execute permission.</li>
+</ul>
+<p>The commands to this are:</p>
+<div class="highlight"><pre><span></span>chgrp -R developers workspace # Recursively add dir and all files to developers
+chmod g+s workspace # future files are part of developers group
+setfacl -R -m g:developers:rw foo/ # current and future files have group rwX permissions
+</pre></div>
+
+
+<p>Now create an <code>.Rprofile</code> file in you ruser home directory and add 
+<code>setwd("/home/username/workspace")</code> to it. That's it, now whenever you login to 
+RStudio you'll be in the shared workspace. </p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'alexanderwaldin'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'jupyter-notebook-rstudio-cloud';
+                var disqus_url = 'http://alexanderwaldin.github.io/jupyter-notebook-rstudio-cloud.html';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://www.linkedin.com/in/alexanderwaldin"><i class="fa fa-linkedin-square fa-lg"></i> linkedin</a></li>
+                <li class="list-group-item"><a href="https://github.com/alexanderwaldin"><i class="fa fa-github-square fa-lg"></i> github</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2016 Alexander Waldin
+            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://alexanderwaldin.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://alexanderwaldin.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://alexanderwaldin.github.io/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'alexanderwaldin'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-67212034-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!-- End Google Analytics Code -->
+
+</body>
+</html>
