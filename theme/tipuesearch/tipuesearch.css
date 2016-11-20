@@ -1,7 +1,12 @@
 
 /*
+<<<<<<< HEAD
 Tipue Search 5.0
 Copyright (c) 2015 Tipue
+=======
+Tipue Search 4.0
+Copyright (c) 2014 Tipue
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 Tipue Search is released under the MIT License
 http://www.tipue.com/search
 */
@@ -17,7 +22,11 @@ http://www.tipue.com/search
 	border-radius: 0;
 	-moz-appearance: none;
 	-webkit-appearance: none;
+<<<<<<< HEAD
      box-shadow: none; 
+=======
+     box-shadow: none;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 	outline: 0;
 	margin: 0;
 	background: #fff url('img/search.png') no-repeat 15px 15px;
@@ -29,19 +38,43 @@ http://www.tipue.com/search
 	padding-top: 15px;
 	margin: 0;
 }
+<<<<<<< HEAD
 #tipue_search_warning
 {
      font: 300 15px/1.6 'Open Sans', sans-serif;
 	color: #555;
+=======
+#tipue_search_loading
+{
+     padding-top: 60px;
+     background: #fff url('img/loader.gif') no-repeat left;
+}
+
+#tipue_search_warning_head
+{
+     font: 300 15px/1.6 'Open Sans', sans-serif;
+	color: #555;
+}
+#tipue_search_warning
+{
+     font: 300 13px/1.6 'Open Sans', sans-serif;
+	color: #333;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 	margin: 7px 0;
 }
 #tipue_search_warning a
 {
+<<<<<<< HEAD
      color: #396;
+=======
+     color: #36c;
+     font-weight: 300;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
      text-decoration: none;
 }
 #tipue_search_warning a:hover
 {
+<<<<<<< HEAD
      color: #555;  
 }
 #tipue_search_results_count
@@ -52,6 +85,19 @@ http://www.tipue.com/search
 .tipue_search_content_title
 {
      font: 300 21px/1.7 'Open Sans', sans-serif;
+=======
+     color: #333;
+}
+#tipue_search_results_count
+{
+     font: 300 13px/1.6 'Open Sans', sans-serif;
+	color: #333;
+}
+.tipue_search_content_title
+{
+     font: 300 25px/1.7 'Open Sans', sans-serif;
+     text-rendering: optimizelegibility;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 	margin-top: 23px;
 }
 .tipue_search_content_title a
@@ -65,23 +111,40 @@ http://www.tipue.com/search
 }
 .tipue_search_content_url
 {
+<<<<<<< HEAD
      font: 300 14px/1.9 'Open Sans', sans-serif;
      word-wrap: break-word;
+=======
+     font: 300 13px/1.7 'Open Sans', sans-serif;
+     word-break: break-all;
+     word-break: break-word;
+     -webkit-hyphens: auto;
+     -moz-hyphens: auto;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
      hyphens: auto;
 }
 .tipue_search_content_url a
 {
+<<<<<<< HEAD
      color: #396;
+=======
+     color: #06c;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
      text-decoration: none;
 }
 .tipue_search_content_url a:hover
 {
+<<<<<<< HEAD
      color: #555;   
+=======
+     color: #333;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 }
 .tipue_search_content_text
 {
      font: 300 15px/1.6 'Open Sans', sans-serif;
 	color: #555;
+<<<<<<< HEAD
      word-wrap: break-word;
      hyphens: auto;
      margin-top: 3px;
@@ -92,6 +155,15 @@ http://www.tipue.com/search
 	color: #555;
      margin: 5px 0;
 }
+=======
+     word-break: break-all;
+     word-break: break-word;
+     -webkit-hyphens: auto;
+     -moz-hyphens: auto;
+     hyphens: auto;
+     margin-top: 3px;
+}
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 .h01
 {
      color: #333;
@@ -106,7 +178,11 @@ http://www.tipue.com/search
 {
 	padding: 0;
 	margin: 0;
+<<<<<<< HEAD
      font: 12px 'Open Sans', sans-serif;
+=======
+     font: 12px/1 'Open Sans', sans-serif;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
 }
 #tipue_search_foot_boxes li
 {
@@ -117,9 +193,15 @@ http://www.tipue.com/search
 }
 #tipue_search_foot_boxes li a
 {
+<<<<<<< HEAD
 	padding: 10px 17px 11px 17px;
      background-color: #fff;
      border: 1px solid #e2e2e2;
+=======
+	padding: 9px 15px 10px 15px;
+     background-color: #f1f1f1;
+     border: 1px solid #dcdcdc;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
      border-radius: 1px;
 	color: #333;
 	margin-right: 7px;
@@ -128,9 +210,15 @@ http://www.tipue.com/search
 }
 #tipue_search_foot_boxes li.current
 {
+<<<<<<< HEAD
 	padding: 10px 17px 11px 17px;
      background: #f6f6f6;
      border: 1px solid #e2e2e2;
+=======
+	padding: 9px 15px 10px 15px;
+     background: #fff;
+     border: 1px solid #dcdcdc;
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
      border-radius: 1px;
 	color: #333;
 	margin-right: 7px;
@@ -138,6 +226,7 @@ http://www.tipue.com/search
 }
 #tipue_search_foot_boxes li a:hover
 {
+<<<<<<< HEAD
      background: #f6f6f6;
 }
 
@@ -201,3 +290,8 @@ http://www.tipue.com/search
 
 
 
+=======
+	border: 1px solid #ccc;
+	background-color: #f3f3f3;
+}
+>>>>>>> 6a370ec948d6d88422d00eb25fd8dd1bb567c420
